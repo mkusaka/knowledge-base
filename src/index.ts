@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import { Command } from 'commander';
 import { Crawler } from './services/crawler';
 import type { OutputFormat } from './services/formatter';
