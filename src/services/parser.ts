@@ -14,23 +14,23 @@ export class Parser {
     return links.map(link => {
       let absoluteUrl: string;
       try {
-        // 相対パスを絶対URLに変換
+        // Convert relative paths to absolute URLs
         if (link.href.startsWith('/')) {
           absoluteUrl = `${base.protocol}//${base.host}${link.href}`;
         } else if (link.href.startsWith('http')) {
           absoluteUrl = link.href;
         } else {
-          // その他の相対パスの場合はURLコンストラクタに任せる
+          // Let URL constructor handle other relative paths
           absoluteUrl = new URL(link.href, baseUrl).toString();
         }
       } catch {
-        // 無効なURLの場合は元のURLを使用
+        // Use original href for invalid URLs
         absoluteUrl = link.href;
       }
 
       return {
         url: absoluteUrl,
-        text: link.textContent?.trim() || ''
+        text: link.textContent?.trim() || '',
       };
     });
   }
