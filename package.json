@@ -4,7 +4,7 @@
   "description": "Markdown crawler with SQLite storage",
   "type": "module",
   "bin": {
-    "knowledge-base": "./dist/index.js"
+    "knowledge-base": "dist/index.js"
   },
   "scripts": {
     "dev": "tsx src/index.ts",
