@@ -7,22 +7,15 @@
     "dev": "tsx src/index.ts",
     "build": "tsc",
     "test": "vitest",
-    "format": "prettier --write \"src/**/*.{ts,tsx,md}\"",
-    "db:generate": "drizzle-kit generate",
-    "db:push": "drizzle-kit push:sqlite",
-    "db:studio": "drizzle-kit studio",
-    "db:migrate": "tsx src/db/migrate.ts"
+    "format": "prettier --write \"src/**/*.{ts,tsx,md}\""
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@libsql/client": "^0.14.0",
     "commander": "^13.1.0",
-    "drizzle-orm": "^0.39.3",
     "jsdom": "^26.0.0",
     "micromatch": "^4.0.8",
-    "minimatch": "^10.0.1",
     "turndown": "^7.2.0"
   },
   "devDependencies": {
@@ -30,7 +23,6 @@
     "@types/micromatch": "^4.0.9",
     "@types/node": "^20.11.30",
     "@types/turndown": "^5.0.5",
-    "drizzle-kit": "^0.30.4",
     "prettier": "^3.2.5",
     "tsx": "^4.19.2",
     "typescript": "^5.7.3",
