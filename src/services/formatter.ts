@@ -1,40 +1,30 @@
-import TurndownService from 'turndown';
 import { JSDOM } from 'jsdom';
+import TurndownService from 'turndown';
 
 export type OutputFormat = 'raw' | 'markdown' | 'knowledge';
 
-interface Knowledge {
-  url: string;
-  title: string;
-  content: string;
-  links: {
-    url: string;
-    text: string;
-  }[];
-  metadata: {
-    crawledAt: string;
-    selector: string;
-  };
-}
-
 export class Formatter {
-  private static turndown = new TurndownService();
-
   static format(html: string, format: OutputFormat, url: string, selector: string): string {
+    const dom = new JSDOM(html);
+    const content = dom.window.document.querySelector(selector);
+    if (!content) return '';
+
     switch (format) {
       case 'raw':
-        return html;
-      case 'markdown':
-        return this.turndown.turndown(html);
+        return content.innerHTML.trim();
+      case 'markdown': {
+        const turndown = new TurndownService({
+          headingStyle: 'atx', // Use # style headings
+          codeBlockStyle: 'fenced'
+        });
+        return turndown.turndown(content.innerHTML);
+      }
       case 'knowledge':
-        const dom = new JSDOM(html);
-        const doc = dom.window.document;
-        
-        const knowledge: Knowledge = {
+        return JSON.stringify({
           url,
-          title: doc.title,
-          content: doc.querySelector(selector)?.textContent?.trim() || '',
-          links: [...doc.querySelectorAll('a')].map(a => ({
+          title: dom.window.document.title || '',
+          content: content.textContent?.trim() || '',
+          links: Array.from(content.querySelectorAll('a')).map(a => ({
             url: a.href,
             text: a.textContent || ''
           })),
@@ -42,9 +32,9 @@ export class Formatter {
             crawledAt: new Date().toISOString(),
             selector
           }
-        };
-        
-        return JSON.stringify(knowledge, null, 2);
+        }, null, 2);
+      default:
+        return '';
     }
   }
 } 

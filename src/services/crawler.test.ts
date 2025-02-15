@@ -4,8 +4,26 @@ import { FileStorage } from './storage'
 
 // Mock dependencies
 vi.mock('./storage')
-vi.mock('./parser')
-vi.mock('./formatter')
+vi.mock('./parser', () => ({
+  Parser: {
+    parse: vi.fn(() => ({
+      title: 'Test Page'
+    })),
+    extractLinks: vi.fn((html) => {
+      if (html.includes('/docs/page')) {
+        return [
+          { url: 'https://example.com/docs/another', text: 'Another Doc' }
+        ]
+      }
+      return []
+    })
+  }
+}))
+vi.mock('./formatter', () => ({
+  Formatter: {
+    format: vi.fn(() => 'Formatted content')
+  }
+}))
 
 describe('Crawler', () => {
   beforeEach(() => {
@@ -20,11 +38,9 @@ describe('Crawler', () => {
       'raw'
     )
 
-    // Mock storage responses
     vi.mocked(FileStorage.prototype.getHtml).mockResolvedValue(null)
     vi.mocked(FileStorage.prototype.isValid).mockResolvedValue(false)
 
-    // Mock fetch response
     global.fetch = vi.fn().mockResolvedValue({
       text: () => Promise.resolve('<html><body><a href="/page2">Link</a></body></html>')
     })
@@ -42,23 +58,20 @@ describe('Crawler', () => {
       'raw'
     )
 
-    // Mock storage responses
     vi.mocked(FileStorage.prototype.getHtml).mockResolvedValue(null)
     vi.mocked(FileStorage.prototype.isValid).mockResolvedValue(false)
 
-    // Mock fetch response
-    global.fetch = vi.fn().mockResolvedValue({
+    global.fetch = vi.fn().mockImplementation(async () => ({
       text: () => Promise.resolve(`
         <html><body>
           <a href="/docs/page">Match</a>
           <a href="/blog/post">No Match</a>
         </body></html>
       `)
-    })
+    }))
 
     const result = await crawler.crawl()
     expect(result).toBeTruthy()
-    // Should only crawl matching URLs
     expect(fetch).toHaveBeenCalledTimes(2)
   })
 }) 
