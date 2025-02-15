@@ -1,67 +1,81 @@
-# Knowledge Base Crawler
+# @mkusaka/knowledge-base
 
-A flexible web crawler that saves pages locally and converts them to various formats.
-
-## Features
-
-- 🌐 Crawls web pages within the same domain
-- 📁 Local caching of HTML content
-- 🔍 Flexible URL pattern matching using micromatch
-- 📝 Multiple output formats (raw HTML, Markdown, structured knowledge)
-- 🎯 CSS selector support for content extraction
+A CLI tool for crawling web pages and saving them in various formats including Markdown.
 
 ## Installation
 
 ```bash
-pnpm install
+npm install -g @mkusaka/knowledge-base
+# or
+pnpm add -g @mkusaka/knowledge-base
 ```
 
 ## Usage
 
 ```bash
-pnpm dev -e <entrypoint-url> [options]
+knowledge-base -e https://example.com -p "/docs/**" -s "main" -f markdown
 ```
 
 ### Options
 
-- `-e, --entrypoint <url>` - Starting URL (required)
-- `-p, --pattern <pattern>` - URL pattern to match (default: "**/*")
-- `-s, --selector <selector>` - HTML selector (default: "body")
-- `-f, --format <format>` - Output format: raw/markdown/knowledge (default: "raw")
+- `-e, --entrypoint <url>`: Starting URL (required)
+- `-p, --pattern <pattern>`: URL pattern to match (default: `**/*`)
+- `-s, --selector <selector>`: HTML element selector (default: `body`)
+- `-f, --format <format>`: Output format (default: `raw`)
+  - `raw`: HTML format
+  - `markdown`: Markdown format
+  - `knowledge`: Structured JSON format
 
-### Examples
+### Output Format Examples
 
-```bash
-# Crawl all docs pages
-pnpm dev -e https://example.com/docs/start -p "/docs/**" -s "main" -f markdown
-
-# Crawl specific sections
-pnpm dev -e https://example.com -p "/{docs,blog}/**" -s "article" -f knowledge
-
-# Exclude certain paths
-pnpm dev -e https://example.com -p "/docs/!(temp)/**" -s "main" -f raw
+#### Raw
+```html
+<div>
+  <h1>Title</h1>
+  <p>Content</p>
+</div>
 ```
 
-## Cache Structure
+#### Markdown
+```markdown
+# Title
 
+Content
 ```
-cache/
-├── pages/              # Cached HTML files
-│   └── {domain}/      # Organized by domain
-│       └── {hash}.html
-└── metadata/          # Page metadata
-    └── {domain}/
-        └── {hash}.json
+
+#### Knowledge
+```json
+{
+  "url": "https://example.com",
+  "title": "Page Title",
+  "content": "Main content text",
+  "links": [
+    {
+      "url": "https://example.com/other",
+      "text": "Link to other page"
+    }
+  ],
+  "metadata": {
+    "crawledAt": "2024-03-21T12:34:56.789Z",
+    "selector": "main"
+  }
+}
 ```
 
 ## Development
 
 ```bash
+# Install dependencies
+pnpm install
+
+# Run development server
+pnpm dev
+
 # Run tests
 pnpm test
 
-# Format code
-pnpm format
+# Build
+pnpm build
 ```
 
 ## License
