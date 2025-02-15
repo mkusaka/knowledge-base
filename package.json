@@ -1,8 +1,11 @@
 {
-  "name": "knowledge-base",
-  "version": "1.0.0",
+  "name": "@mkusaka/knowledge-base",
+  "version": "0.0.0",
   "description": "Markdown crawler with SQLite storage",
   "type": "module",
+  "bin": {
+    "knowledge-base": "./dist/index.js"
+  },
   "scripts": {
     "dev": "tsx src/index.ts",
     "build": "tsc",
@@ -12,6 +15,10 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "dependencies": {
     "commander": "^13.1.0",
     "jsdom": "^26.0.0",
